@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aupp Eats</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafb;
+            color: #111827;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 64px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #003070;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #374151;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #111827;
+        }
+
+        /* Profile Dropdown */
+        .profile-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-icon {
+            font-size: 24px;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .profile-icon:hover {
+            background-color: #f3f4f6;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: white;
+            min-width: 280px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            border-radius: 12px;
+            z-index: 1000;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        .dropdown-content.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-header {
+            padding: 16px;
+            background: linear-gradient(135deg, #003070 0%, #0052cc 100%);
+            color: white;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .user-email {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 8px 0;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: #374151;
+            transition: background-color 0.2s;
+            font-size: 14px;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .item-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 24px 0;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            color: #003070;
+            text-decoration: none;
+            margin-bottom: 24px;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .back-button:hover {
+            color: #003070;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        /* Restaurant Header */
+        .restaurant-header {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .restaurant-logo {
+            width: 182px;
+            height: 261px;
+            border-radius: 8px;
+            object-fit: cover; /* Keeps aspect ratio while filling */
+            flex-shrink: 0;
+        }
+
+        .restaurant-info {
+            flex: 1;
+        }
+
+        .restaurant-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .restaurant-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            background: #dcfce7;
+            color: #166534;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .more-info {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .restaurant-address {
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .change-btn {
+            color: #003070;
+            text-decoration: none;
+            font-size: 12px;
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .category-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-btn.active {
+            background: #003070;
+            color: white;
+        }
+
+        .category-btn:not(.active) {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .category-btn:not(.active):hover {
+            background: #e5e7eb;
+        }
+
+        /* Search */
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: #003070;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Menu Items */
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .menu-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .item-info {
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .item-emoji {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .item-details h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .item-description {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .item-price {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .item-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .control-btn.minus {
+            background: #e5e7eb;
+        }
+
+        .control-btn.minus:hover {
+            background: #d1d5db;
+        }
+
+        .control-btn.plus {
+            background: #003070;
+            color: white;
+        }
+
+        .control-btn.plus:hover {
+            background: #ea580c;
+        }
+
+        .quantity {
+            width: 32px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* Basket */
+        .basket {
+            position: sticky;
+            top: 24px;
+        }
+
+        .basket-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .basket-empty {
+            color: #6b7280;
+            text-align: center;
+            padding: 32px 0;
+        }
+
+        .basket-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .basket-item-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .basket-item-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid #d1d5db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .basket-item-dot::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #9ca3af;
+            border-radius: 50%;
+        }
+
+        .basket-item-name {
+            font-size: 14px;
+        }
+
+        .basket-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .basket-item-price {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .basket-control-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .basket-control-btn.minus {
+            background: #e5e7eb;
+        }
+
+        .basket-control-btn.minus:hover {
+            background: #d1d5db;
+        }
+
+        .basket-control-btn.plus {
+            background: #003070;
+            color: white;
+        }
+
+        .basket-control-btn.plus:hover {
+            background: #ea580c;
+        }
+
+        .basket-quantity {
+            width: 24px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            margin-bottom: 24px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .summary-row.total {
+            font-weight: bold;
+            font-size: 18px;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 8px;
+        }
+
+        /* Checkout Button */
+        .checkout-btn {
+            width: 100%;
+            padding: 12px 16px;
+            background: #003070;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .checkout-btn:hover {
+            background: #ea580c;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .restaurant-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .restaurant-logo {
+                width: 182px;
+                height: 261px;
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">🍴</div>
+                <nav class="nav-links">
+                    <div class="profile-dropdown">
+                        <a href="#" class="profile-icon" id="profileIcon">👤</a>
+                        <div class="dropdown-content" id="dropdownContent">
+                            <div class="dropdown-header">
+                                <div class="user-info">
+                                    <div class="user-avatar">👤</div>
+                                    <div class="user-details">
+                                        <div class="user-name">John Doe</div>
+                                        <div class="user-email">john.doe@example.com</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item">
+                                <span class="item-icon">📊</span>
+                                <span>Dashboard</span>
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <span class="item-icon">📋</span>
+                                <span>Order History</span>
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <span class="item-icon">⚙️</span>
+                                <span>Settings</span>
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <span class="item-icon">❤️</span>
+                                <span>Favorites</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="{{ url_for('logout') }}" class="dropdown-item">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                <span class="item-icon">🚪</span>
+                                <span>Logout</span>
+                            </a>
+                        </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="content-grid">
+                <!-- Left Column -->
+                <div class="left-column">
+                    <!-- Restaurant Header -->
+                    <div class="card">
+                        <div class="restaurant-header">
+                            <img class="restaurant-logo" src="{{ url_for('static', filename='images/AUPP_logo.png') }}" alt="AUPP Logo">
+                            <div class="restaurant-info">
+                                <h1 class="restaurant-name">AUPP Eats</h1>
+                                <div class="restaurant-status">
+                                    <span class="status-badge">We are open</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Tabs -->
+                    <div class="card">
+                        <div class="category-tabs">
+                            <button class="category-btn active" data-category="All Categories">All Categories</button>
+                            <button class="category-btn" data-category="Appetizer">Appetizer</button>
+                            <button class="category-btn" data-category="Specials">Specials</button>
+                            <button class="category-btn" data-category="Main Course">Main Course</button>
+                            <button class="category-btn" data-category="Desserts">Desserts</button>
+                            <button class="category-btn" data-category="Drinks">Drinks</button>
+                        </div>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="card">
+                        <div class="search-container">
+                            <input type="text" class="search-input" placeholder="Search menu items..." id="searchInput">
+                            <div class="search-icon">🔍</div>
+                        </div>
+                    </div>
+
+                    <!-- Menu Items -->
+                    <div id="menuItems"></div>
+                </div>
+
+                <!-- Basket Sidebar -->
+                <div class="basket card">
+                    <div class="basket-header">
+                        🛒 Basket
+                    </div>
+                    <div id="basketContent">
+                        <div class="basket-empty">Your basket is empty</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Menu data
+        const menuItems = [
+            {
+                id: 1,
+                name: 'Puff-Puff',
+                description: 'Traditional Nigerian donut ball, rolled in sugar',
+                price: 4.99,
+                category: 'Traditional',
+                image: '🍩'
+            },
+            {
+                id: 2,
+                name: 'SCOTCH EGG',
+                description: 'Boiled egg wrapped in a ground meat mixture, coated in breadcrumbs, and deep-fried',
+                price: 2.00,
+                category: 'Appetizer',
+                image: '🥚'
+            },
+            {
+                id: 3,
+                name: 'ATA RICE',
+                description: 'Small pieces of beef, goat, tripe, and tendon sautéed in crushed green Jamaican pepper',
+                price: 12.00,
+                category: 'Main Course',
+                image: '🍚'
+            },
+            {
+                id: 4,
+                name: 'RICE AND DODO',
+                description: '(plantains) w/chicken, fish, beef or goat',
+                price: 11.99,
+                category: 'Main Course',
+                image: '🍛'
+            },
+            {
+                id: 5,
+                name: 'Special Shrimp Deluxe',
+                description: 'Fresh shrimp sautéed in blended mixture of tomatoes, onion, peppers over choice of rice',
+                price: 12.99,
+                category: 'Seafoods',
+                image: '🍤'
+            },
+            {
+                id: 6,
+                name: 'Whole catfish with rice and vegetables',
+                description: 'Whole catfish slow cooked in tomatoes, pepper and onion sauce with seasoning to taste',
+                price: 13.99,
+                category: 'Seafoods',
+                image: '🐟'
+            },
+            {
+                id: 7,
+                name: 'African Salad',
+                description: 'Traditional African salad with fresh vegetables and spices',
+                price: 8.99,
+                category: 'Salads',
+                image: '🥗'
+            },
+            {
+                id: 8,
+                name: 'EBA',
+                description: 'Traditional Nigerian staple made from cassava flour',
+                price: 5.99,
+                category: 'Traditional',
+                image: '🍽️'
+            }
+        ];
+
+        // State
+        let selectedCategory = 'All Categories';
+        let basket = [];
+        let searchTerm = '';
+
+        // DOM elements
+        const menuItemsContainer = document.getElementById('menuItems');
+        const basketContent = document.getElementById('basketContent');
+        const searchInput = document.getElementById('searchInput');
+
+        // Event listeners
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                selectedCategory = btn.dataset.category;
+                updateCategoryButtons();
+                renderMenuItems();
+            });
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            searchTerm = e.target.value;
+            renderMenuItems();
+        });
+
+        // Functions
+        function updateCategoryButtons() {
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.category === selectedCategory);
+            });
+        }
+
+        function getFilteredItems() {
+            return menuItems.filter(item => {
+                const matchesCategory = selectedCategory === 'All Categories' || item.category === selectedCategory;
+                const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                     item.description.toLowerCase().includes(searchTerm.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+        }
+
+        function getItemQuantity(itemId) {
+            const item = basket.find(basketItem => basketItem.id === itemId);
+            return item ? item.quantity : 0;
+        }
+
+        function addToBasket(item) {
+            const existingItem = basket.find(basketItem => basketItem.id === item.id);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                basket.push({ ...item, quantity: 1 });
+            }
+            renderMenuItems();
+            renderBasket();
+        }
+
+        function removeFromBasket(itemId) {
+            const existingItem = basket.find(basketItem => basketItem.id === itemId);
+            if (existingItem && existingItem.quantity > 1) {
+                existingItem.quantity -= 1;
+            } else {
+                basket = basket.filter(basketItem => basketItem.id !== itemId);
+            }
+            renderMenuItems();
+            renderBasket();
+        }
+
+        function renderMenuItems() {
+            const filteredItems = getFilteredItems();
+            menuItemsContainer.innerHTML = filteredItems.map(item => {
+                const quantity = getItemQuantity(item.id);
+                return `
+                    <div class="card">
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <span class="item-emoji">${item.image}</span>
+                                <div class="item-details">
+                                    <h3>${item.name}</h3>
+                                    <p class="item-description">${item.description}</p>
+                                    <p class="item-price">£${item.price.toFixed(2)}</p>
+                                </div>
+                            </div>
+                            <div class="item-controls">
+                                ${quantity > 0 ? `<button class="control-btn minus" onclick="removeFromBasket(${item.id})">-</button>` : ''}
+                                ${quantity > 0 ? `<span class="quantity">${quantity}</span>` : ''}
+                                <button class="control-btn plus" onclick="addToBasket(${JSON.stringify(item).replace(/"/g, '&quot;')})">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderBasket() {
+            if (basket.length === 0) {
+                basketContent.innerHTML = '<div class="basket-empty">Your basket is empty</div>';
+                return;
+            }
+
+            const subtotal = basket.reduce((total, item) => total + (item.price * item.quantity), 0);
+            const orderTotal = subtotal;
+
+            basketContent.innerHTML = `
+                <div class="basket-items">
+                    ${basket.map(item => `
+                        <div class="basket-item">
+                            <div class="basket-item-info">
+                                <div class="basket-item-dot"></div>
+                                <span class="basket-item-name">${item.name}</span>
+                            </div>
+                            <div class="basket-item-controls">
+                                <span class="basket-item-price">£${(item.price * item.quantity).toFixed(2)}</span>
+                                <button class="basket-control-btn minus" onclick="removeFromBasket(${item.id})">-</button>
+                                <span class="basket-quantity">${item.quantity}</span>
+                                <button class="basket-control-btn plus" onclick="addToBasket(${JSON.stringify(item).replace(/"/g, '&quot;')})">+</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="order-summary">
+                    <div class="summary-row">
+                        <span>Sub Total:</span>
+                        <span>£${subtotal.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Order Total:</span>
+                        <span>£${orderTotal.toFixed(2)}</span>
+                    </div>
+                </div>
+
+                <button class="checkout-btn" onclick="window.location.href='checkout.html'">
+                    Checkout · £${orderTotal.toFixed(2)}
+                </button>
+            `;
+        }
+
+        // Profile dropdown functionality
+        const profileIcon = document.getElementById('profileIcon');
+        const dropdownContent = document.getElementById('dropdownContent');
+
+        profileIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+            dropdownContent.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!profileIcon.contains(e.target) && !dropdownContent.contains(e.target)) {
+                dropdownContent.classList.remove('show');
+            }
+        });
+
+        // Initialize
+        renderMenuItems();
+        renderBasket();
+    </script>
+</body>
+</html>

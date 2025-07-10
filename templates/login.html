@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+    {% block title %}Login - AUPP Eats{% endblock %}
+
+    {% block content %}
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="logo">
+                <div class="logo-container">
+                    <!-- University Logo - Replace 'university-logo.png' with your actual logo file -->
+                    <img src="{{ url_for('static', filename='images/AUPP_Logo.png') }}"
+                         alt="University Logo"
+                         class="university-logo"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+
+                    <!-- Logo Placeholder - Shows when image is not available -->
+                    <div class="logo-placeholder" style="display: none;">
+                        <i class="fas fa-university"></i>
+                    </div>
+
+                    <div>
+                        <h1><i class="fas fa-utensils"></i> AUPP Eats</h1>
+                    </div>
+                </div>
+                <p>University Canteen Food Ordering</p>
+            </div>
+
+            <form method="POST">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-id-card"></i>
+                    </span>
+                    <input type="text" class="form-control" name="student_email" placeholder="Student Email" required>
+                </div>
+
+                <div class="input-group password-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                    <input type="password" class="form-control" name="password" id="loginPassword" placeholder="Password" required>
+                    <span class="input-group-text password-toggle" onclick="togglePassword('loginPassword', this)">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+
+            <div class="auth-links">
+                <p class="mb-0">Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function togglePassword(inputId, toggle) {
+        const passwordInput = document.getElementById(inputId);
+        const icon = toggle.querySelector('i');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+    </script>
+    {% endblock %}

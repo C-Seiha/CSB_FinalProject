@@ -1,0 +1,820 @@
+<<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - AUPP Eats</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #111827;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            margin-bottom: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #003070;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn {
+            background: #f3f4f6;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #374151;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #e5e7eb;
+            transform: translateX(-2px);
+        }
+
+        /* Main Content */
+        .payment-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 32px;
+            align-items: start;
+        }
+
+        .payment-form {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-header {
+            margin-bottom: 32px;
+        }
+
+        .form-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #003070;
+            margin-bottom: 8px;
+        }
+
+        .form-subtitle {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        /* Payment Method Selection */
+        .payment-methods {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #374151;
+        }
+
+        .payment-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .payment-option {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            background: white;
+        }
+
+        .payment-option:hover {
+            border-color: #003070;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 48, 112, 0.15);
+        }
+
+        .payment-option.active {
+            border-color: #003070;
+            background: linear-gradient(135deg, #003070 0%, #0052cc 100%);
+            color: white;
+        }
+
+        .payment-option-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .payment-option-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .payment-option-desc {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        /* Online Payment Form */
+        .online-payment-form {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .online-payment-form.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #003070;
+            box-shadow: 0 0 0 3px rgba(0, 48, 112, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .card-icons {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .card-icon {
+            font-size: 24px;
+        }
+
+        /* Mobile Banking Forms */
+        .mobile-banking-form {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .mobile-banking-form.active {
+            display: block;
+        }
+
+        .banking-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+        }
+
+        .banking-logo img {
+            max-height: 40px;
+            max-width: 120px;
+        }
+
+        .banking-instructions {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .banking-instructions h4 {
+            color: #0369a1;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .banking-instructions ol {
+            margin-left: 16px;
+            color: #0369a1;
+        }
+
+        .banking-instructions li {
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        /* Physical Payment Info */
+        .physical-payment-info {
+            display: none;
+            padding: 24px;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            border-radius: 12px;
+            margin-top: 16px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .physical-payment-info.active {
+            display: block;
+        }
+
+        .payment-info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #003070;
+        }
+
+        .payment-info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .payment-info-icon {
+            font-size: 24px;
+            color: #003070;
+        }
+
+        .payment-info-text {
+            flex: 1;
+        }
+
+        .payment-info-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .payment-info-desc {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 20px;
+        }
+
+        .summary-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .item-emoji {
+            font-size: 20px;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .item-quantity {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .item-price {
+            font-weight: 600;
+            color: #003070;
+        }
+
+        .summary-totals {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .summary-row.total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #003070;
+            padding-top: 8px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #003070 0%, #0052cc 100%);
+            color: white;
+            width: 100%;
+            margin-top: 24px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 48, 112, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .payment-container {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            
+            .payment-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <div class="logo">
+                    🍴 AUPP Eats
+                </div>
+                <button class="back-btn" onclick="goBack()">
+                    ← Back to Menu
+                </button>
+            </div>
+        </div>
+
+        <div class="payment-container">
+            <!-- Payment Form -->
+            <div class="payment-form">
+                <div class="form-header">
+                    <h1 class="form-title">Complete Your Order</h1>
+                    <p class="form-subtitle">Choose your preferred payment method</p>
+                </div>
+
+                <!-- Payment Method Selection -->
+                <div class="payment-methods">
+                    <h2 class="section-title">Payment Method</h2>
+                    <div class="payment-options">
+                        <div class="payment-option active" data-method="online">
+                            <div class="payment-option-icon">💳</div>
+                            <div class="payment-option-title">Online Payment</div>
+                            <div class="payment-option-desc">Pay with card or digital wallet</div>
+                        </div>
+                        <div class="payment-option" data-method="aba">
+                            <div class="payment-option-icon">🏦</div>
+                            <div class="payment-option-title">ABA Mobile</div>
+                            <div class="payment-option-desc">Pay with ABA Mobile Banking</div>
+                        </div>
+                        <div class="payment-option" data-method="aceleda">
+                            <div class="payment-option-icon">📱</div>
+                            <div class="payment-option-title">ACELEDA Mobile</div>
+                            <div class="payment-option-desc">Pay with ACELEDA Mobile Banking</div>
+                        </div>
+                        <div class="payment-option" data-method="physical">
+                            <div class="payment-option-icon">🏪</div>
+                            <div class="payment-option-title">Pay at Counter</div>
+                            <div class="payment-option-desc">Pay when you pick up</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Online Payment Form -->
+                <div class="online-payment-form active">
+                    <h3 class="section-title">Card Details</h3>
+                    <div class="form-group">
+                        <label class="form-label">Card Number</label>
+                        <input type="text" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19" id="cardNumber">
+                        <div class="card-icons">
+                            <span class="card-icon">💳</span>
+                            <span class="card-icon">🏧</span>
+                            <span class="card-icon">💎</span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Expiry Date</label>
+                            <input type="text" class="form-input" placeholder="MM/YY" maxlength="5" id="expiryDate">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">CVV</label>
+                            <input type="text" class="form-input" placeholder="123" maxlength="3" id="cvv">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cardholder Name</label>
+                        <input type="text" class="form-input" placeholder="John Doe" id="cardName">
+                    </div>
+                </div>
+
+                <!-- ABA Mobile Banking Form -->
+                <div class="mobile-banking-form" id="abaForm">
+                    <div class="banking-logo">
+                        <div style="background: #1e40af; color: white; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 18px;">ABA</div>
+                    </div>
+                    <div class="banking-instructions">
+                        <h4>How to pay with ABA Mobile:</h4>
+                        <ol>
+                            <li>Open your ABA Mobile app</li>
+                            <li>Select "Pay" or "Transfer"</li>
+                            <li>Enter merchant account: <strong>AUPP-EATS-001</strong></li>
+                            <li>Enter amount: <strong>Loading...</strong></li>
+                            <li>Add reference: Your order number</li>
+                            <li>Complete the transaction</li>
+                        </ol>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Your Phone Number</label>
+                        <input type="tel" class="form-input" placeholder="+855 12 345 678" id="abaPhone">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Transaction Reference</label>
+                        <input type="text" class="form-input" placeholder="Enter transaction ID from ABA app" id="abaRef">
+                    </div>
+                </div>
+
+                <!-- ACELEDA Mobile Banking Form -->
+                <div class="mobile-banking-form" id="aceledaForm">
+                    <div class="banking-logo">
+                        <div style="background: #dc2626; color: white; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 18px;">ACELEDA</div>
+                    </div>
+                    <div class="banking-instructions">
+                        <h4>How to pay with ACELEDA Mobile:</h4>
+                        <ol>
+                            <li>Open your ACELEDA Mobile app</li>
+                            <li>Select "Transfer" or "Payment"</li>
+                            <li>Enter merchant account: <strong>AUPP-EATS-002</strong></li>
+                            <li>Enter amount: <strong>$25.68</strong></li>
+                            <li>Add description: Your order details</li>
+                            <li>Confirm and complete payment</li>
+                        </ol>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Your Phone Number</label>
+                        <input type="tel" class="form-input" placeholder="+855 12 345 678" id="aceledaPhone">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Transaction Reference</label>
+                        <input type="text" class="form-input" placeholder="Enter transaction ID from ACELEDA app" id="aceledaRef">
+                    </div>
+                </div>
+
+                <!-- Physical Payment Info -->
+                <div class="physical-payment-info">
+                    <div class="payment-info-item">
+                        <div class="payment-info-icon">📍</div>
+                        <div class="payment-info-text">
+                            <div class="payment-info-title">Pickup Location</div>
+                            <div class="payment-info-desc">AUPP Campus Cafeteria, Ground Floor</div>
+                        </div>
+                    </div>
+                    <div class="payment-info-item">
+                        <div class="payment-info-icon">⏰</div>
+                        <div class="payment-info-text">
+                            <div class="payment-info-title">Pickup Time</div>
+                            <div class="payment-info-desc">Ready in 15-20 minutes</div>
+                        </div>
+                    </div>
+                    <div class="payment-info-item">
+                        <div class="payment-info-icon">💰</div>
+                        <div class="payment-info-text">
+                            <div class="payment-info-title">Accepted Payments</div>
+                            <div class="payment-info-desc">Cash, Card, Mobile Payment</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button class="btn btn-primary" onclick="processOrder()">
+                    <span class="btn-text">Place Order</span>
+                    <div class="loading"></div>
+                </button>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <div class="summary-header">
+                    🛒 Order Summary
+                </div>
+                <div id="orderItems"></div>
+                <div class="summary-totals">
+                    <span>Total:</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Payment method selection
+        document.querySelectorAll('.payment-option').forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove active class from all options
+                document.querySelectorAll('.payment-option').forEach(opt => {
+                    opt.classList.remove('active');
+                });
+                
+                // Add active class to clicked option
+                option.classList.add('active');
+                
+                // Hide all forms
+                document.querySelector('.online-payment-form').classList.remove('active');
+                document.querySelector('#abaForm').classList.remove('active');
+                document.querySelector('#aceledaForm').classList.remove('active');
+                document.querySelector('.physical-payment-info').classList.remove('active');
+                
+                // Show selected form
+                const method = option.dataset.method;
+                if (method === 'online') {
+                    document.querySelector('.online-payment-form').classList.add('active');
+                } else if (method === 'aba') {
+                    document.querySelector('#abaForm').classList.add('active');
+                } else if (method === 'aceleda') {
+                    document.querySelector('#aceledaForm').classList.add('active');
+                } else if (method === 'physical') {
+                    document.querySelector('.physical-payment-info').classList.add('active');
+                }
+            });
+        });
+
+        // Card number formatting
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+
+        // Expiry date formatting
+        document.getElementById('expiryDate').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+
+        // CVV validation
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+
+        // Process order
+        function processOrder() {
+            const btn = document.querySelector('.btn-primary');
+            const btnText = btn.querySelector('.btn-text');
+            const loading = btn.querySelector('.loading');
+            const activeMethod = document.querySelector('.payment-option.active').dataset.method;
+            
+            // Show loading
+            btnText.textContent = 'Processing...';
+            loading.style.display = 'block';
+            btn.disabled = true;
+            
+            // Simulate processing
+            setTimeout(() => {
+                if (activeMethod === 'online') {
+                    // Validate card details
+                    const cardNumber = document.getElementById('cardNumber').value;
+                    const expiryDate = document.getElementById('expiryDate').value;
+                    const cvv = document.getElementById('cvv').value;
+                    const cardName = document.getElementById('cardName').value;
+                    
+                    if (!cardNumber || !expiryDate || !cvv || !cardName) {
+                        alert('Please fill in all card details');
+                        btnText.textContent = 'Place Order';
+                        loading.style.display = 'none';
+                        btn.disabled = false;
+                        return;
+                    }
+                    
+                    // Redirect to waiting page after successful payment
+                    window.location.href = 'waiting';
+                    return;
+                } else if (activeMethod === 'aba') {
+                    const phone = document.getElementById('abaPhone').value;
+                    const ref = document.getElementById('abaRef').value;
+                    
+                    if (!phone || !ref) {
+                        alert('Please fill in your phone number and transaction reference');
+                        btnText.textContent = 'Place Order';
+                        loading.style.display = 'none';
+                        btn.disabled = false;
+                        return;
+                    }
+                    
+                    // Redirect to waiting page after successful payment
+                    window.location.href = 'waiting';
+                    return;
+                } else if (activeMethod === 'aceleda') {
+                    const phone = document.getElementById('aceledaPhone').value;
+                    const ref = document.getElementById('aceledaRef').value;
+                    
+                    if (!phone || !ref) {
+                        alert('Please fill in your phone number and transaction reference');
+                        btnText.textContent = 'Place Order';
+                        loading.style.display = 'none';
+                        btn.disabled = false;
+                        return;
+                    }
+                    
+                    // Redirect to waiting page after successful payment
+                    window.location.href = 'waiting';
+                    return;
+                } else {
+                    // For counter payment, also redirect to waiting page
+                    window.location.href = 'waiting';
+                    return;
+                }
+                
+                
+                // Reset button
+                btnText.textContent = 'Place Order';
+                loading.style.display = 'none';
+                btn.disabled = false;
+            }, 2000);
+        }
+    
+        // Go back to menu
+        function goBack() {
+            if (confirm('Are you sure you want to go back? Your order will not be saved.')) {
+                window.history.back();
+            }
+        }
+    </script>
+    <script>
+        // Load basket and total from localStorage
+        const basket = JSON.parse(localStorage.getItem('basket')) || [];
+
+        const subtotal = basket.reduce((total, item) => total + (item.price * item.quantity), 0);
+        const orderTotal = subtotal;
+
+        // Update order items
+        const orderItemsContainer = document.getElementById('orderItems');
+        if (basket.length === 0) {
+            orderItemsContainer.innerHTML = '<p>Your basket is empty.</p>';
+        } else {
+            orderItemsContainer.innerHTML = basket.map(item => `
+                <div class="order-item">
+                    <div class="item-info">
+                        <span class="item-emoji">${item.emoji || '🍽️'}</span>
+                        <div class="item-details">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-quantity">Qty: ${item.quantity}</div>
+                        </div>
+                    </div>
+                    <div class="item-price">£${(item.price * item.quantity).toFixed(2)}</div>
+                </div>
+            `).join('');
+        }
+
+        // Update the totals in the summary
+        const summaryRows = document.querySelector('.summary-totals');
+        summaryRows.innerHTML = `
+            <div class="summary-row total">
+                <span>Total:</span>
+                <span>£${orderTotal.toFixed(2)}</span>
+            </div>
+        `;
+
+        // Save total for payment instructions
+        localStorage.setItem('orderTotal', orderTotal.toFixed(2));
+
+        // Update amount inside payment instructions (ABA and ACELEDA)
+        document.querySelectorAll('.banking-instructions ol li strong').forEach((el, index) => {
+            if (index === 1) el.textContent = `£${orderTotal.toFixed(2)}`; // Line for amount
+        });
+    </script>
+</body>
+</html>

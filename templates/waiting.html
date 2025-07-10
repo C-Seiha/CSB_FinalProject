@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - AUPP Eats</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #111827;
+            line-height: 1.6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .confirmation-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 48px 32px;
+            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .confirmation-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981, #059669, #047857);
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: white;
+            animation: bounce 0.8s ease-out;
+        }
+
+        @keyframes bounce {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .confirmation-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #059669;
+            margin-bottom: 12px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .confirmation-subtitle {
+            font-size: 18px;
+            color: #6b7280;
+            margin-bottom: 32px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .order-details {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 1px solid #e5e7eb;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .order-number {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #d1d5db;
+        }
+
+        .order-number-label {
+            font-size: 14px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .order-number-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #003070;
+            font-family: monospace;
+        }
+
+        .order-summary {
+            text-align: left;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .item-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .item-emoji {
+            font-size: 16px;
+        }
+
+        .item-price {
+            font-weight: 600;
+            color: #003070;
+        }
+
+        .summary-totals {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 2px solid #d1d5db;
+            font-size: 18px;
+            font-weight: bold;
+            color: #003070;
+        }
+
+        .preparation-status {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 1px solid #f59e0b;
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .status-icon {
+            font-size: 24px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .status-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #92400e;
+        }
+
+        .preparation-time {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .time-display {
+            font-size: 36px;
+            font-weight: bold;
+            color: #d97706;
+            margin-bottom: 8px;
+            font-family: monospace;
+            animation: pulse 2s infinite;
+        }
+
+        .time-label {
+            font-size: 14px;
+            color: #92400e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(217, 119, 6, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+            border-radius: 4px;
+            width: 0%;
+            animation: fillProgress 1200s linear infinite;
+        }
+
+        @keyframes fillProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        .pickup-info {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 32px;
+            border: 1px solid #3b82f6;
+            animation: fadeInUp 0.8s ease-out 1s both;
+        }
+
+        .pickup-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .pickup-icon {
+            font-size: 20px;
+            color: #1d4ed8;
+        }
+
+        .pickup-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1d4ed8;
+        }
+
+        .pickup-details {
+            font-size: 14px;
+            color: #1e40af;
+            line-height: 1.5;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            animation: fadeInUp 0.8s ease-out 1.2s both;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #003070 0%, #0052cc 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 48, 112, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.8);
+            color: #374151;
+            border: 2px solid #e5e7eb;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 1);
+            border-color: #d1d5db;
+            transform: translateY(-1px);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+            
+            .confirmation-card {
+                padding: 32px 24px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .confirmation-title {
+                font-size: 24px;
+            }
+            
+            .time-display {
+                font-size: 28px;
+            }
+        }
+
+        .floating-emojis {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-emoji {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.6;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-emojis">
+        <div class="floating-emoji" style="left: 10%; animation-delay: 0s;">🍕</div>
+        <div class="floating-emoji" style="left: 20%; animation-delay: 1s;">🍔</div>
+        <div class="floating-emoji" style="left: 30%; animation-delay: 2s;">🍜</div>
+        <div class="floating-emoji" style="left: 40%; animation-delay: 3s;">🍛</div>
+        <div class="floating-emoji" style="left: 50%; animation-delay: 4s;">🥘</div>
+        <div class="floating-emoji" style="left: 60%; animation-delay: 5s;">🍲</div>
+        <div class="floating-emoji" style="left: 70%; animation-delay: 0.5s;">🥗</div>
+        <div class="floating-emoji" style="left: 80%; animation-delay: 1.5s;">🍱</div>
+        <div class="floating-emoji" style="left: 90%; animation-delay: 2.5s;">🍖</div>
+    </div>
+
+    <div class="container">
+        <div class="confirmation-card">
+            <div class="notification-badge">1</div>
+            
+            <div class="success-icon">✓</div>
+            
+            <h1 class="confirmation-title">Order Confirmed!</h1>
+            <p class="confirmation-subtitle">Thank you for your order. Your delicious meal is being prepared.</p>
+            
+            <div class="order-details">
+                <div class="order-number">
+                    <span class="order-number-label">Order Number</span>
+                    <span class="order-number-value" id="orderNumber">#AUPP-2024-001</span>
+                </div>
+                
+                <div class="order-summary">
+                    <div id="orderItems"></div>
+                    <div class="summary-totals">
+                        <span>Total Paid:</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="preparation-status">
+                <div class="status-header">
+                    <span class="status-icon">👨‍🍳</span>
+                    <span class="status-title">Preparing Your Order</span>
+                </div>
+                
+                <div class="preparation-time">
+                    <div class="time-display" id="timeRemaining">18:45</div>
+                    <div class="time-label">Estimated Time Remaining</div>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                
+                <div style="text-align: center; font-size: 14px; color: #92400e;">
+                    Our chefs are working their magic! 🔥
+                </div>
+            </div>
+            
+            <div class="pickup-info">
+                <div class="pickup-header">
+                    <span class="pickup-icon">📍</span>
+                    <span class="pickup-title">Pickup Information</span>
+                </div>
+                <div class="pickup-details">
+                    <strong>Location:</strong> AUPP Campus Cafeteria, Ground Floor<br>
+                    <strong>Ready at:</strong> <span id="readyTime">2:35 PM</span><br>
+                    <strong>Please bring:</strong> Your order number and payment receipt
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="dashboard" class="btn btn-primary">
+                    🏠 Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate random order number
+        function generateOrderNumber() {
+            const date = new Date();
+            const year = date.getFullYear();
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            return `#AUPP-${year}-${random}`;
+        }
+
+        // Calculate estimated ready time
+        function calculateReadyTime() {
+            const now = new Date();
+            const readyTime = new Date(now.getTime() + (20 * 60 * 1000)); // 20 minutes from now
+            return readyTime.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+        }
+
+        // Countdown timer
+        function startCountdown() {
+            let totalSeconds = 20 * 60; // 20 minutes in seconds
+            const timerElement = document.getElementById('timeRemaining');
+            
+            const timer = setInterval(() => {
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (totalSeconds <= 0) {
+                    clearInterval(timer);
+                    timerElement.textContent = '00:00';
+                    showReadyNotification();
+                }
+                
+                totalSeconds--;
+            }, 1000);
+        }
+
+        // Show ready notification
+        function showReadyNotification() {
+            const statusTitle = document.querySelector('.status-title');
+            const statusIcon = document.querySelector('.status-icon');
+            const preparationStatus = document.querySelector('.preparation-status');
+            
+            statusIcon.textContent = '✅';
+            statusTitle.textContent = 'Order Ready!';
+            preparationStatus.style.background = 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)';
+            preparationStatus.style.borderColor = '#10b981';
+            
+            // Play notification sound (if available)
+            if ('Notification' in window) {
+                new Notification('AUPP Eats', {
+                    body: 'Your order is ready for pickup!',
+                    icon: '🍴'
+                });
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set dynamic content
+            document.getElementById('orderNumber').textContent = generateOrderNumber();
+            document.getElementById('readyTime').textContent = calculateReadyTime();
+            
+            // Start countdown
+            startCountdown();
+            
+            // Request notification permission
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        });
+
+        // Add some interactive effects
+        document.querySelector('.confirmation-card').addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+        });
+
+        document.querySelector('.confirmation-card').addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    </script>
+    <script>
+        // Load basket and total from localStorage
+        const basket = JSON.parse(localStorage.getItem('basket')) || [];
+
+        const subtotal = basket.reduce((total, item) => total + (item.price * item.quantity), 0);
+        const orderTotal = subtotal;
+
+        // Update order items
+        const orderItemsContainer = document.getElementById('orderItems');
+        if (basket.length === 0) {
+            orderItemsContainer.innerHTML = '<p>Your basket is empty.</p>';
+        } else {
+            orderItemsContainer.innerHTML = basket.map(item => `
+                <div class="order-item">
+                    <div class="item-info">
+                        <span class="item-emoji">${item.emoji || '🍽️'}</span>
+                        <div class="item-details">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-quantity">Qty: ${item.quantity}</div>
+                        </div>
+                    </div>
+                    <div class="item-price">£${(item.price * item.quantity).toFixed(2)}</div>
+                </div>
+            `).join('');
+        }
+
+        // Update the totals in the summary
+        const summaryRows = document.querySelector('.summary-totals');
+        summaryRows.innerHTML = `
+            <div class="summary-row total">
+                <span>Total:</span>
+                <span>£${orderTotal.toFixed(2)}</span>
+            </div>
+        `;
+
+        // Save total for payment instructions
+        localStorage.setItem('orderTotal', orderTotal.toFixed(2));
+
+        // Update amount inside payment instructions (ABA and ACELEDA)
+        document.querySelectorAll('.banking-instructions ol li strong').forEach((el, index) => {
+            if (index === 1) el.textContent = `£${orderTotal.toFixed(2)}`; // Line for amount
+        });
+    </script>
+</body>
+</html>
