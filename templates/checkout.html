@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -243,28 +243,42 @@
             max-width: 120px;
         }
 
-        .banking-instructions {
+        /* QR Code Container */
+        .qr-code-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+        }
+
+        .qr-code-container img {
+            max-width: 170px;
+            max-height: 250px;
+            width: 100%;
+            height: auto;
+        }
+
+        .qr-instructions {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 16px;
             background: #f0f9ff;
             border: 1px solid #0ea5e9;
             border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 20px;
         }
 
-        .banking-instructions h4 {
+        .qr-instructions p {
             color: #0369a1;
-            margin-bottom: 8px;
             font-size: 14px;
+            margin-bottom: 8px;
         }
 
-        .banking-instructions ol {
-            margin-left: 16px;
-            color: #0369a1;
-        }
-
-        .banking-instructions li {
-            margin-bottom: 4px;
-            font-size: 13px;
+        .qr-instructions strong {
+            color: #003070;
         }
 
         /* Physical Payment Info */
@@ -545,20 +559,13 @@
                     <div class="banking-logo">
                         <div style="background: #1e40af; color: white; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 18px;">ABA</div>
                     </div>
-                    <div class="banking-instructions">
-                        <h4>How to pay with ABA Mobile:</h4>
-                        <ol>
-                            <li>Open your ABA Mobile app</li>
-                            <li>Select "Pay" or "Transfer"</li>
-                            <li>Enter merchant account: <strong>AUPP-EATS-001</strong></li>
-                            <li>Enter amount: <strong>Loading...</strong></li>
-                            <li>Add reference: Your order number</li>
-                            <li>Complete the transaction</li>
-                        </ol>
+                    <div class="qr-code-container">
+                        <img src="{{ url_for('static', filename='images/qr_code.jpg') }}" alt="ABA Payment QR Code">
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Your Phone Number</label>
-                        <input type="tel" class="form-input" placeholder="+855 12 345 678" id="abaPhone">
+                    <div class="qr-instructions">
+                        <p><strong>Scan the QR code above with your ABA Mobile app</strong></p>
+                        <p>Or transfer to account: <strong>AUPP-EATS-001</strong></p>
+                        <p>Amount: <strong id="abaAmount">Loading...</strong></p>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Transaction Reference</label>
@@ -571,20 +578,13 @@
                     <div class="banking-logo">
                         <div style="background: #dc2626; color: white; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 18px;">ACELEDA</div>
                     </div>
-                    <div class="banking-instructions">
-                        <h4>How to pay with ACELEDA Mobile:</h4>
-                        <ol>
-                            <li>Open your ACELEDA Mobile app</li>
-                            <li>Select "Transfer" or "Payment"</li>
-                            <li>Enter merchant account: <strong>AUPP-EATS-002</strong></li>
-                            <li>Enter amount: <strong>$25.68</strong></li>
-                            <li>Add description: Your order details</li>
-                            <li>Confirm and complete payment</li>
-                        </ol>
+                    <div class="qr-code-container">
+                        <img src="{{ url_for('static', filename='images/qr_code.jpg') }}" alt="ACELEDA Payment QR Code">
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Your Phone Number</label>
-                        <input type="tel" class="form-input" placeholder="+855 12 345 678" id="aceledaPhone">
+                    <div class="qr-instructions">
+                        <p><strong>Scan the QR code above with your ACELEDA Mobile app</strong></p>
+                        <p>Or transfer to account: <strong>AUPP-EATS-002</strong></p>
+                        <p>Amount: <strong id="aceledaAmount">Loading...</strong></p>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Transaction Reference</label>
@@ -630,8 +630,8 @@
                     🛒 Order Summary
                 </div>
                 <div id="orderItems"></div>
-                <div class="summary-totals">
-                    <span>Total:</span>
+                <div class="summary-totals" id="summaryTotals">
+                    <!-- Total will be populated by JavaScript -->
                 </div>
             </div>
         </div>
@@ -723,11 +723,10 @@
                     window.location.href = 'waiting';
                     return;
                 } else if (activeMethod === 'aba') {
-                    const phone = document.getElementById('abaPhone').value;
                     const ref = document.getElementById('abaRef').value;
                     
-                    if (!phone || !ref) {
-                        alert('Please fill in your phone number and transaction reference');
+                    if (!ref) {
+                        alert('Please enter the transaction reference');
                         btnText.textContent = 'Place Order';
                         loading.style.display = 'none';
                         btn.disabled = false;
@@ -738,11 +737,10 @@
                     window.location.href = 'waiting';
                     return;
                 } else if (activeMethod === 'aceleda') {
-                    const phone = document.getElementById('aceledaPhone').value;
                     const ref = document.getElementById('aceledaRef').value;
                     
-                    if (!phone || !ref) {
-                        alert('Please fill in your phone number and transaction reference');
+                    if (!ref) {
+                        alert('Please enter the transaction reference');
                         btnText.textContent = 'Place Order';
                         loading.style.display = 'none';
                         btn.disabled = false;
@@ -799,9 +797,9 @@
             `).join('');
         }
 
-        // Update the totals in the summary
-        const summaryRows = document.querySelector('.summary-totals');
-        summaryRows.innerHTML = `
+        // Update the totals in the summary - Fixed to show only one Total line
+        const summaryTotals = document.getElementById('summaryTotals');
+        summaryTotals.innerHTML = `
             <div class="summary-row total">
                 <span>Total:</span>
                 <span>£${orderTotal.toFixed(2)}</span>
@@ -811,10 +809,9 @@
         // Save total for payment instructions
         localStorage.setItem('orderTotal', orderTotal.toFixed(2));
 
-        // Update amount inside payment instructions (ABA and ACELEDA)
-        document.querySelectorAll('.banking-instructions ol li strong').forEach((el, index) => {
-            if (index === 1) el.textContent = `£${orderTotal.toFixed(2)}`; // Line for amount
-        });
+        // Update amount in QR code instructions
+        document.getElementById('abaAmount').textContent = `£${orderTotal.toFixed(2)}`;
+        document.getElementById('aceledaAmount').textContent = `£${orderTotal.toFixed(2)}`;
     </script>
 </body>
 </html>
